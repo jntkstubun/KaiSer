@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <title>KaiSer Warung — Sistem Kasir Offline POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/creator.css">
+  <link rel="stylesheet" href="css/warung.css">
+</head>
+<body>
+
+  <!-- ==================== 1. WARUNG LOGIN SECTION ==================== -->
+  <div id="loginSection" class="login-container">
+    <div class="login-card">
+      <div class="brand-header">
+        <div class="brand-logo">🌊</div>
+        <h1 class="brand-title">KaiSer</h1>
+        <span class="brand-subtitle">WARUNG</span>
+        <p class="login-subtitle">Sistem Kasir POS (Offline-First)</p>
+      </div>
+
+      <form id="warungLoginForm">
+        <div class="form-group">
+          <label for="warungIdInput">ID WARUNG</label>
+          <div class="input-wrapper">
+            <input type="text" id="warungIdInput" class="form-control" placeholder="Contoh: BERKAH001" required autocomplete="username" style="text-transform: uppercase;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="warungPwdInput">PASSWORD WARUNG</label>
+          <div class="input-wrapper">
+            <input type="password" id="warungPwdInput" class="form-control" placeholder="Masukkan Password Warung" required autocomplete="current-password">
+            <button type="button" id="toggleWarungPwd" class="toggle-pwd" title="Tampilkan Password">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">MASUK KASIR WARUNG</button>
+      </form>
+
+      <p style="font-size: 11.5px; color: #94a3b8; margin-top: 24px;">
+        Belum memiliki akun Warung? Hubungi penyedia KaiSer Anda.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== 2. WARUNG POS DASHBOARD SECTION ==================== -->
+  <div id="appSection" style="display: none;">
+    
+    <!-- Top Header Bar -->
+    <header class="warung-header">
+      <div class="warung-brand">
+        <span style="font-size: 22px;">🌊</span>
+        <div>
+          <h2 id="headerWarungName">Warung Berkah</h2>
+          <span id="headerWarungId" class="warung-id-tag" style="background: rgba(255,255,255,0.15); color: white;">BERKAH001</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span id="onlineStatusBadge" class="status-badge badge-aktif">
+          <span class="status-dot dot-aktif"></span> Online
+        </span>
+        <button id="btnLogoutWarung" class="btn-logout">🚪 Keluar</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="nav-tabs-bar">
+      <button class="nav-tab active" data-tab="pos">🛒 Kasir (POS)</button>
+      <button class="nav-tab" data-tab="produk">📦 Produk & Stok</button>
+      <button class="nav-tab" data-tab="riwayat">📜 Riwayat Transaksi</button>
+      <button class="nav-tab" data-tab="laporan">📊 Laporan Penjualan</button>
+      <button class="nav-tab" data-tab="pengaturan">⚙️ Pengaturan & Backup</button>
+    </nav>
+
+    <!-- MAIN PAGES CONTAINER -->
+    <main>
+
+      <!-- TAB 1: KASIR (POS) -->
+      <div id="tab-pos" class="tab-page active">
+        <div class="pos-layout">
+          
+          <!-- Catalog Section -->
+          <div>
+            <div class="catalog-toolbar">
+              <div class="search-box" style="flex: 1;">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="productSearchInput" class="form-control" placeholder="Cari nama produk / kode SKU...">
+              </div>
+
+              <select id="categoryFilter" class="form-control" style="width: auto; font-weight: 700;">
+                <option value="ALL">Semua Kategori</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Sembako">Sembako</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <!-- Grid Products -->
+            <div id="productGrid" class="product-grid">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div id="emptyProductsState" style="display: none; text-align: center; padding: 40px 20px; color: var(--text-muted);">
+              <span style="font-size: 36px; display: block;">🔍</span>
+              <p>Produk tidak ditemukan.</p>
+            </div>
+          </div>
+
+          <!-- Cart Sidebar -->
+          <div class="cart-card">
+            <div class="cart-header">
+              <h3 style="font-size: 15px; font-weight: 800;">🛒 Keranjang Belanja</h3>
+              <button id="btnClearCart" class="btn-secondary" style="font-size: 11px;">🗑️ Kosongkan</button>
+            </div>
+
+            <div id="cartItemsList" class="cart-body">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div id="emptyCartState" style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
+              <span style="font-size: 32px; display: block; margin-bottom: 6px;">🛒</span>
+              <p style="font-size: 13px;">Keranjang masih kosong.<br>Klik produk di sebelah kiri untuk menambah.</p>
+            </div>
+
+            <div class="cart-footer">
+              <div class="cart-summary-row">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">Rp 0</span>
+              </div>
+              <div class="cart-summary-row cart-total-row">
+                <span>TOTAL:</span>
+                <span id="cartTotal" style="color: var(--primary);">Rp 0</span>
+              </div>
+
+              <button id="btnCheckout" class="btn-checkout" disabled>🚀 PROSES BAYAR</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: PRODUK & STOK -->
+      <div id="tab-produk" class="tab-page">
+        <div class="card">
+          <div class="card-header">
+            <h3>📦 Kelola Katalog Produk & Stok</h3>
+            <button id="btnAddProduct" class="btn-primary" style="width: auto; padding: 8px 16px; font-size: 13px;">➕ Tambah Produk</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Nama Produk</th>
+                    <th>Kategori</th>
+                    <th>Harga Modal</th>
+                    <th>Harga Jual</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="productTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: RIWAYAT TRANSAKSI -->
+      <div id="tab-riwayat" class="tab-page">
+        <div class="card">
+          <div class="card-header">
+            <h3>📜 Riwayat Transaksi Penjualan</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>No Invoice</th>
+                    <th>Waktu Transaksi</th>
+                    <th>Jumlah Item</th>
+                    <th>Total Belanja</th>
+                    <th>Pembayaran</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="txHistoryTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: LAPORAN PENJUALAN -->
+      <div id="tab-laporan" class="tab-page">
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Total Omset</h4>
+              <div id="reportOmset" class="stat-value" style="font-size: 22px; color: var(--primary);">Rp 0</div>
+            </div>
+            <div class="stat-icon icon-blue">💰</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Keuntungan Bersih</h4>
+              <div id="reportProfit" class="stat-value" style="font-size: 22px; color: var(--success);">Rp 0</div>
+            </div>
+            <div class="stat-icon icon-green">📈</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Total Transaksi</h4>
+              <div id="reportTxCount" class="stat-value">0</div>
+            </div>
+            <div class="stat-icon icon-amber">🧾</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Produk Terjual</h4>
+              <div id="reportItemsSold" class="stat-value">0 pcs</div>
+            </div>
+            <div class="stat-icon icon-red">📦</div>
+          </div>
+        </section>
+
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-header">
+            <h3>🏆 5 Produk Terlaris</h3>
+          </div>
+          <div class="card-body">
+            <ul id="topProductsList" style="list-style: none;">
+              <!-- Rendered via JS -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: PENGATURAN & BACKUP -->
+      <div id="tab-pengaturan" class="tab-page">
+        <div class="dashboard-grid">
+          
+          <div class="card">
+            <div class="card-header">
+              <h3>⚙️ Profil Warung & Struk</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <label>NAMA WARUNG</label>
+                <input type="text" id="settingWarungName" class="form-control">
+              </div>
+
+              <div class="form-row">
+                <label>NAMA PEMILIK</label>
+                <input type="text" id="settingOwnerName" class="form-control">
+              </div>
+
+              <div class="form-row">
+                <label>NOMOR HP / WA</label>
+                <input type="text" id="settingPhone" class="form-control">
+              </div>
+
+              <div class="form-row">
+                <label>ALAMAT</label>
+                <input type="text" id="settingAddress" class="form-control">
+              </div>
+
+              <div class="form-row">
+                <label>CATATAN FOOTER STRUK</label>
+                <input type="text" id="settingReceiptNote" class="form-control" placeholder="Contoh: Terima kasih atas kunjungan Anda!">
+              </div>
+
+              <button id="btnSaveSettings" class="btn-primary">💾 Simpan Profil</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>📦 Backup & Restore Data Lokal</h3>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                Simpan cadangan data produk dan transaksi Anda dalam file JSON agar aman jika berganti HP/Tablet.
+              </p>
+
+              <button id="btnExportBackup" class="btn-primary" style="margin-bottom: 20px;">📥 Download Backup DB (JSON)</button>
+
+              <hr style="border: none; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+              <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">RESTORE FILE BACKUP</label>
+              <input type="file" id="inputImportBackup" accept=".json" class="form-control">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal Payment / Checkout -->
+  <div id="checkoutModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">💵 Pembayaran Kasir</h4>
+        <button id="btnClosePayModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">TOTAL HARUS DIBAYAR</span>
+          <div id="modalPayTotal" style="font-size: 32px; font-weight: 800; color: var(--primary);">Rp 0</div>
+        </div>
+
+        <div class="form-group">
+          <label>UANG DITERIMA (RP)</label>
+          <input type="number" id="payAmountInput" class="form-control" style="font-size: 20px; font-weight: 800; text-align: center;">
+        </div>
+
+        <div class="quick-cash-grid">
+          <button class="btn-quick-cash" data-amount="0">Uang Pas</button>
+          <button class="btn-quick-cash" data-amount="10000">10.000</button>
+          <button class="btn-quick-cash" data-amount="20000">20.000</button>
+          <button class="btn-quick-cash" data-amount="50000">50.000</button>
+          <button class="btn-quick-cash" data-amount="100000">100.000</button>
+        </div>
+
+        <div style="margin-top: 16px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md); text-align: center;">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">KEMBALIAN:</span>
+          <div id="payChangeDisplay" style="font-size: 22px; font-weight: 800; color: var(--success);">Rp 0</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnProcessPay" class="btn-primary" style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%);">✅ SELESAIKAN TRANSAKSI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thermal Receipt -->
+  <div id="receiptModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 360px;">
+      <div class="modal-header">
+        <h4 class="modal-title">🧾 Struk Pembayaran</h4>
+        <button id="btnCloseReceiptModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 12px;">
+        <div id="receiptContainer">
+          <!-- Rendered Thermal Receipt -->
+        </div>
+      </div>
+      <div class="modal-footer" style="flex-wrap: wrap;">
+        <button id="btnPrintReceipt" class="btn-primary" style="flex: 1;">🖨️ Cetak Struk</button>
+        <button id="btnShareWA" class="btn-secondary" style="flex: 1; background: #f0fdf4; border-color: #bbf7d0; color: #16a34a;">📱 Kirim WA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Add/Edit Product -->
+  <div id="productModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modalProductTitle" class="modal-title">➕ Tambah Produk Baru</h4>
+        <button id="btnCloseProductModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <div class="form-row">
+            <label>NAMA PRODUK</label>
+            <input type="text" id="prodName" class="form-control" required placeholder="Contoh: Es Teh Manis">
+          </div>
+
+          <div class="form-row">
+            <label>KATEGORI</label>
+            <select id="prodCategory" class="form-control">
+              <option value="Makanan">Makanan</option>
+              <option value="Minuman">Minuman</option>
+              <option value="Sembako">Sembako</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label>HARGA MODAL (RP)</label>
+              <input type="number" id="prodCostPrice" class="form-control" value="0">
+            </div>
+            <div>
+              <label>HARGA JUAL (RP)</label>
+              <input type="number" id="prodPrice" class="form-control" required value="0">
+            </div>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label>STOK AWAL</label>
+              <input type="number" id="prodStock" class="form-control" required value="10">
+            </div>
+            <div>
+              <label>SKU / BARCODE (OPSIONAL)</label>
+              <input type="text" id="prodSKU" class="form-control" placeholder="899123...">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 10px;">💾 Simpan Produk</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="js/kaiser-core.js"></script>
+  <script src="js/warung.js"></script>
+</body>
+</html>
