@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <title>KaiSer Creator — Panel Pengelola Utama Master</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/creator.css">
+</head>
+<body>
+
+  <!-- ==================== 1. LOGIN CREATOR SECTION ==================== -->
+  <div id="creatorLoginSection" class="login-container">
+    <div class="login-card">
+      <div class="brand-header">
+        <div class="brand-logo">🌊</div>
+        <h1 class="brand-title">KaiSer</h1>
+        <span class="brand-subtitle">CREATOR PANEL</span>
+        <p class="login-subtitle">Masuk Akses Master Pengelola System SaaS</p>
+      </div>
+
+      <form id="creatorLoginForm">
+        <div class="form-group">
+          <label for="creatorIdInput">ID CREATOR MASTER</label>
+          <div class="input-wrapper">
+            <input type="text" id="creatorIdInput" class="form-control" placeholder="Contoh: ilyas0905" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="creatorPwdInput">PASSWORD CREATOR</label>
+          <div class="input-wrapper">
+            <input type="password" id="creatorPwdInput" class="form-control" placeholder="••••••••••••" required autocomplete="current-password">
+            <button type="button" id="toggleCreatorPwd" class="toggle-pwd" title="Tampilkan/Sembunyikan Password">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">🚀 MASUK PANEL CREATOR</button>
+      </form>
+
+      <p style="font-size: 11.5px; color: #94a3b8; margin-top: 24px;">
+        Akses rahasia khusus Pengelola KaiSer POS System.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== 2. CREATOR DASHBOARD SECTION ==================== -->
+  <div id="creatorAppSection" style="display: none;">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="app-brand">
+        <div class="brand-logo">🌊</div>
+        <div>
+          <h2>KaiSer Master Panel</h2>
+          <span style="font-size: 11.5px; color: #94a3b8;">Pengelola & Lisensi Warung SaaS</span>
+        </div>
+      </div>
+
+      <div class="user-info">
+        <span id="creatorNameBadge" class="user-badge">👑 Ilyas (Creator)</span>
+        <button id="btnLogoutCreator" class="btn-logout">🚪 Keluar</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- BROADCAST ANNOUNCEMENT CARD -->
+      <section class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%); color: white;">
+        <div class="card-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <h3 style="color: white;">📢 Pengumuman Broadcast ke Seluruh Layar Warung</h3>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="inputBroadcastMsg" class="form-control" placeholder="Tulis pengumuman global (misal: Maintenance sistem jam 23.00)..." style="flex: 1;">
+            <button id="btnPublishBroadcast" class="btn-primary" style="width: auto; padding: 10px 20px; background: #38bdf8; color: #0f172a; font-weight: 800;">📢 Kirim Banner</button>
+            <button id="btnClearBroadcast" class="btn-secondary" style="background: rgba(255,255,255,0.15); border: none; color: white;">🗑️ Hapus Banner</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Metrics Cards -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <h4>Total Warung Terdaftar</h4>
+            <div id="statTotalWarungs" class="stat-value">0</div>
+          </div>
+          <div class="stat-icon icon-blue">🏪</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <h4>Akun Aktif</h4>
+            <div id="statActiveWarungs" class="stat-value" style="color: var(--success);">0</div>
+          </div>
+          <div class="stat-icon icon-green">🟢</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <h4>Akun Suspend / Nonaktif</h4>
+            <div id="statSuspendWarungs" class="stat-value" style="color: var(--warning);">0</div>
+          </div>
+          <div class="stat-icon icon-amber">🟡</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <h4>Kadaluarsa / Expired</h4>
+            <div id="statExpiredWarungs" class="stat-value" style="color: var(--danger);">0</div>
+          </div>
+          <div class="stat-icon icon-red">🔴</div>
+        </div>
+      </section>
+
+      <!-- Dashboard Grid: Form & Table -->
+      <div class="dashboard-grid">
+        
+        <!-- Form Buat Akun Warung Baru oleh Creator -->
+        <section class="card">
+          <div class="card-header">
+            <h3>➕ Buat Akun Warung / Owner Baru</h3>
+          </div>
+          <div class="card-body">
+            <form id="createWarungForm">
+              
+              <div class="form-row">
+                <label for="newWarungName">NAMA WARUNG / TOKO</label>
+                <input type="text" id="newWarungName" class="form-control" placeholder="Contoh: Warung Berkah Berkah" required>
+              </div>
+
+              <div class="form-row">
+                <label for="newOwnerName">NAMA PEMILIK (OWNER)</label>
+                <input type="text" id="newOwnerName" class="form-control" placeholder="Contoh: Ahmad Supardi" required>
+              </div>
+
+              <div class="form-row">
+                <label for="newPhone">NOMOR TELEPON / WA</label>
+                <input type="tel" id="newPhone" class="form-control" placeholder="Contoh: 081234567890">
+              </div>
+
+              <div class="form-row">
+                <label for="newAddress">ALAMAT WARUNG</label>
+                <input type="text" id="newAddress" class="form-control" placeholder="Contoh: Jl. Merdeka No. 45">
+              </div>
+
+              <div class="form-row">
+                <label for="newWarungId">ID WARUNG (AKSES LOGIN)</label>
+                <div class="input-group-action">
+                  <input type="text" id="newWarungId" class="form-control" placeholder="BERKAH001" data-auto="true">
+                  <button type="button" id="btnGenId" class="btn-secondary" title="Buat ID Otomatis">⚡ Auto</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="newPassword">PASSWORD OWNER (ID & PW CREATOR)</label>
+                <div class="input-group-action">
+                  <input type="text" id="newPassword" class="form-control" placeholder="Bk#2026@001" required>
+                  <button type="button" id="btnGenPwd" class="btn-secondary" title="Acak Password">🔑 Acak</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="newDuration">MASA BERLAKU PAKET & HARGA</label>
+                <select id="newDuration" class="form-control" style="font-weight: 700;">
+                  <option value="1_MONTH">🗓️ 1 Bulan — Rp 15.000</option>
+                  <option value="3_MONTHS">🗓️ 3 Bulan — Rp 40.000</option>
+                  <option value="6_MONTHS">🗓️ 6 Bulan — Rp 75.000</option>
+                  <option value="1_YEAR" selected>🗓️ 1 Tahun — Rp 140.000</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-primary">💾 Buat & Aktifkan Akun Warung</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Tabel Daftar Warung Terdaftar -->
+        <section class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>📋 Daftar Seluruh Akun Warung Terdaftar</h3>
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="searchWarungInput" class="form-control" placeholder="Cari ID / Nama Warung / Pemilik..." style="padding: 6px 12px 6px 32px; font-size: 12.5px;">
+            </div>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID Warung</th>
+                    <th>Nama Warung & Pemilik</th>
+                    <th>Password</th>
+                    <th>Status (Pilihan Interaktif)</th>
+                    <th>Masa Aktif & Expired</th>
+                    <th>Aksi Pengelola</th>
+                  </tr>
+                </thead>
+                <tbody id="warungTableBody">
+                  <!-- Data rendered via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL EXTEND SUBSCRIPTION ==================== -->
+  <div id="extendModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">🗓️ Perpanjang Masa Aktif Lisensi</h4>
+        <button id="btnCloseExtendModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+          Pilih durasi perpanjangan untuk <strong id="extendWarungName">Warung</strong>:
+        </p>
+
+        <div class="form-row">
+          <label for="extendDuration">PILIH PAKET PERPANJANGAN</label>
+          <select id="extendDuration" class="form-control" style="font-weight: 700;">
+            <option value="1_MONTH">🗓️ Tambah 1 Bulan — Rp 15.000</option>
+            <option value="3_MONTHS">🗓️ Tambah 3 Bulan — Rp 40.000</option>
+            <option value="6_MONTHS">🗓️ Tambah 6 Bulan — Rp 75.000</option>
+            <option value="1_YEAR" selected>🗓️ Tambah 1 Tahun — Rp 140.000</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnProcessExtend" class="btn-primary">✅ Perpanjang Masa Aktif</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL WA REMINDER ==================== -->
+  <div id="waModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">📱 Pengingat WhatsApp Expired</h4>
+        <button id="btnCloseWaModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>NOMOR WHATSAPP WARUNG</label>
+          <input type="text" id="waPhoneInput" class="form-control">
+        </div>
+
+        <div class="form-row">
+          <label>PRATINJAU PESAN WA</label>
+          <textarea id="waMessagePreview" class="form-control" rows="8" readonly style="font-family: monospace; font-size: 11.5px;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnOpenWAChat" class="btn-primary" style="background: #16a34a;">📱 Buka Chat WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="js/kaiser-core.js"></script>
+  <script src="js/creator.js"></script>
+</body>
+</html>
